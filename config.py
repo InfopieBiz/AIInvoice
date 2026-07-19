@@ -23,3 +23,65 @@ MAIN_MENU_OPTIONS = {
     "5": "Results Dashboard",
     "0": "Exit",
 }
+
+# Password input limits
+MIN_PASSWORD_LENGTH = 1
+MAX_PASSWORD_LENGTH = 128
+
+
+# Common passwords used by the strength analyzer.
+# The dictionary attack module will later use a larger external file.
+COMMON_PASSWORDS = frozenset(
+    {
+        "123456",
+        "12345678",
+        "123456789",
+        "password",
+        "password1",
+        "password123",
+        "qwerty",
+        "qwerty123",
+        "admin",
+        "admin123",
+        "welcome",
+        "welcome123",
+        "letmein",
+        "iloveyou",
+        "football",
+        "monkey",
+        "dragon",
+        "abc123",
+        "user",
+        "login",
+    }
+)
+
+
+# Common words that remain predictable even when numbers or symbols
+# are added around them.
+COMMON_PASSWORD_WORDS = (
+    "password",
+    "admin",
+    "welcome",
+    "letmein",
+    "qwerty",
+    "football",
+    "monkey",
+    "dragon",
+    "login",
+    "iloveyou",
+)
+
+
+# Common keyboard patterns.
+KEYBOARD_PATTERNS = (
+    "qwerty",
+    "asdf",
+    "asdfgh",
+    "zxcv",
+    "zxcvbn",
+    "qaz",
+    "wsx",
+    "1q2w",
+    "1q2w3e",
+)
