@@ -6,7 +6,7 @@ It allows users to check the strength of their password, how weak passwords are 
 
 ## What have been done until now
 
-The first phase of the project is done.
+Phase 1 - Application setup > Complete
 
 The application so far includes:
 
@@ -17,7 +17,37 @@ The application so far includes:
 * Menu option input validation 
 * A safe exit strategy
 
-The following phases will be used to develop the password strength analyzer, attack demonstrations, secure storage features and results dashboard.
+Phase 2 - Password Strength Analyzer > in progress 
+
+Stage 1 - Basic Password Checks 
+
+  Completed:
+    - Secure hidden password input
+    - Empty-input validation
+    - Password-length checking, and checks for lowercase letters, uppercase letters, numbers, and special characters
+    - The results are displayed in the terminal using PASS or FAIL
+
+Stage 2 - Strength Scoring 
+
+  Completed: 
+    - Scoring based on password length
+    - Character-variety points
+    - Strength Rating ( Very Weak - Very Strong )
+    - Structured analysis results using dataclass
+
+  To be copleted in the next stages: 
+    - Common password detection
+    - Advanced pattern detection
+    - Personalized recommendations
+    - Final CLI integration and polish
+    
+## In the next phases
+
+The following will be implemented:
+- Dictionary Attack Simulator
+- Brute Force Attack Simulator
+- Secure Password Storage
+- Results Dashboard
 
 ## Prerequisites 
 * Python 3.10+
@@ -25,17 +55,17 @@ The following phases will be used to develop the password strength analyzer, att
 
 ## Start the app
 
-1. Activate the virtual environment.
+1. Activate the virtual environment
+   
+macOS or Linux - source .venv/bin/activate
+Windows - .venv\Scripts\activate.bat
 
-### macOS or Linux ```bash source.venv/bin/activate```
+2. Run the app
 
-### Windows ```bash .venv\Scripts\activate.bat ``` 
+python main.py
 
-Run the app:
-python main.py # run main.py 
-
-Depending on your system you may need to use:
-``` ` ` ` ` python3 main.py ` ` `
+On some systems, you may need to use:
+python3 main.py
 
 ## VERY IMPORTANT NOTE:
 
