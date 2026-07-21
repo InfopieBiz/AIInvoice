@@ -6,7 +6,7 @@ It allows users to check the strength of their password, how weak passwords are 
 
 ## What have been done until now
 
-Phase 1 - Application setup > Complete
+### Phase 1 - Application setup > Complete
 
 The application so far includes:
 
@@ -17,9 +17,9 @@ The application so far includes:
 * Menu option input validation 
 * A safe exit strategy
 
-Phase 2 - Password Strength Analyzer > in progress 
+### Phase 2 - Password Strength Analyzer > in progress 
 
-Stage 1 - Basic Password Checks 
+#### Stage 1 - Basic Password Checks 
 
   Completed:
     - Secure hidden password input
@@ -27,7 +27,7 @@ Stage 1 - Basic Password Checks
     - Password-length checking, and checks for lowercase letters, uppercase letters, numbers, and special characters
     - The results are displayed in the terminal using PASS or FAIL
 
-Stage 2 - Strength Scoring 
+#### Stage 2 - Strength Scoring 
 
   Completed: 
     - Scoring based on password length
@@ -35,7 +35,7 @@ Stage 2 - Strength Scoring
     - Strength Rating ( Very Weak - Very Strong )
     - Structured analysis results using dataclass
 
-  To be copleted in the next stages: 
+  To be completed in the next stages: 
     - Common password detection
     - Advanced pattern detection
     - Personalized recommendations
@@ -58,6 +58,7 @@ The following will be implemented:
 1. Activate the virtual environment
    
 macOS or Linux - source .venv/bin/activate
+
 Windows - .venv\Scripts\activate.bat
 
 2. Run the app
@@ -65,6 +66,7 @@ Windows - .venv\Scripts\activate.bat
 python main.py
 
 On some systems, you may need to use:
+
 python3 main.py
 
 ## VERY IMPORTANT NOTE:
