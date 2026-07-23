@@ -14,7 +14,7 @@
     - Structured analysis results
 
     Stage 3: Done
-    - Exact common-password detection
+    - Exact common-password checks
     - Common-word detection
     - Character-substitution normalization
     - Score penalties for predictable passwords
