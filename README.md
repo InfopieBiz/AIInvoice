@@ -22,32 +22,41 @@ The application so far includes:
 #### Stage 1 - Basic Password Checks 
 
   Completed:
-    - Secure hidden password input
-    - Empty-input validation
-    - Password-length checking, and checks for lowercase letters, uppercase letters, numbers, and special characters
-    - The results are displayed in the terminal using PASS or FAIL
+    * Secure hidden password input
+    * Empty-input validation
+    * Password-length checking, and checks for lowercase letters, uppercase letters, numbers, and special characters
+    * The results are displayed in the terminal using PASS or FAIL
 
 #### Stage 2 - Strength Scoring 
 
   Completed: 
-    - Scoring based on password length
-    - Character-variety points
-    - Strength Rating ( Very Weak - Very Strong )
-    - Structured analysis results using dataclass
+    * Scoring based on password length
+    * Character-variety points
+    * Strength Rating ( Very Weak - Very Strong )
+    * Structured analysis results using dataclass
 
-  To be completed in the next stages: 
-    - Common password detection
-    - Advanced pattern detection
-    - Personalized recommendations
-    - Final CLI integration and polish
+#### Stage 3 - Common Password Detection 
+
+  Completed: 
+    * Detect exact common passwords
+    * Detection of common password words within longer passwords
+    * Character-substitution normalization
+    * Detection of easily guessed passwords like P@ssw0rd123
+    * Penalties for common and predictable passwords
+    
+
+#### To be completed in the next stages: 
+    * Advanced pattern detection
+    * Personalized recommendations
+    * Final CLI integration and polish
     
 ## In the next phases
 
 The following will be implemented:
-- Dictionary Attack Simulator
-- Brute Force Attack Simulator
-- Secure Password Storage
-- Results Dashboard
+* Dictionary Attack Simulator
+* Brute Force Attack Simulator
+* Secure Password Storage
+* Results Dashboard
 
 ## Prerequisites 
 * Python 3.10+
