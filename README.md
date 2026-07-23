@@ -21,7 +21,7 @@ The application so far includes:
 
 #### Stage 1 - Basic Password Checks 
 
-  Completed:
+    Completed:
     * Secure hidden password input
     * Empty-input validation
     * Password-length checking, and checks for lowercase letters, uppercase letters, numbers, and special characters
@@ -29,7 +29,7 @@ The application so far includes:
 
 #### Stage 2 - Strength Scoring 
 
-  Completed: 
+    Completed: 
     * Scoring based on password length
     * Character-variety points
     * Strength Rating ( Very Weak - Very Strong )
@@ -37,7 +37,7 @@ The application so far includes:
 
 #### Stage 3 - Common Password Detection 
 
-  Completed: 
+    Completed: 
     * Detect exact common passwords
     * Detection of common password words within longer passwords
     * Character-substitution normalization
