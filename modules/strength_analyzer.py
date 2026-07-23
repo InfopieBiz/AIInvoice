@@ -12,21 +12,30 @@
     - Character-variety points
     - Strength Rating 
     - Structured analysis results
+
+    Stage 3: Done
+    - Exact common-password detection
+    - Common-word detection
+    - Character-substitution normalization
+    - Score penalties for predictable passwords
 """
 
 import string
 from dataclasses import dataclass
 from getpass import getpass
 
+from config import COMMON_PASSWORDS, COMMON_PASSWORD_WORDS
+
 
 @dataclass(frozen=True)
 class PasswordAnalysisResult:
     """Store the password analysis result."""
-
     length: int
     score: int
     rating: str
     checks: dict[str, bool]
+    patterns: dict[str, bool]
+
 
 def read_password_securely() -> str:
     """Read a non-empty password without displaying it."""
@@ -44,6 +53,7 @@ def read_password_securely() -> str:
             continue
 
         return password
+
 
 def check_character_classes(
     password: str,
@@ -68,6 +78,47 @@ def check_character_classes(
         ),
     }
 
+
+def normalize_for_pattern_matching(password: str) -> str:
+    """Normalize common character substitutions."""
+    substitutions = str.maketrans(
+        {
+            "@": "a",
+            "0": "o",
+            "1": "i",
+            "3": "e",
+            "4": "a",
+            "5": "s",
+            "7": "t",
+            "$": "s",
+        }
+    )
+    return password.lower().translate(substitutions)
+
+
+def check_common_passwords(password: str) -> dict[str, bool]:
+    """Check for exact common passwords and common words."""
+    lowercase_password = password.lower()
+    normalized_password = normalize_for_pattern_matching(password)
+
+    exact_common_password = (
+        lowercase_password in COMMON_PASSWORDS
+    )
+
+    common_word = (
+        not exact_common_password
+        and any(
+            word in normalized_password
+            for word in COMMON_PASSWORD_WORDS
+        )
+    )
+
+    return {
+        "common_password": exact_common_password,
+        "common_word": common_word,
+    }
+
+
 def calculate_length_score(password: str) -> int:
     """Calculate points based on password length."""
     length = len(password)
@@ -85,21 +136,30 @@ def calculate_length_score(password: str) -> int:
 
     return 50
 
+
 def calculate_strength_score(
     password: str,
     checks: dict[str, bool],
+    pattern_checks: dict[str, bool],
 ) -> int:
     """Calculate the password strength score."""
     score = calculate_length_score(password)
 
-    # Add 10 points for every character type found.
     score += sum(
         10
         for check_passed in checks.values()
         if check_passed
     )
 
+    if pattern_checks["common_password"]:
+        score -= 35
+    elif pattern_checks["common_word"]:
+        score -= 20
+    else:
+        score += 10
+
     return max(0, min(score, 100))
+
 
 def determine_strength_rating(score: int) -> str:
     """Convert the score into a strength rating."""
@@ -114,10 +174,18 @@ def determine_strength_rating(score: int) -> str:
 
     return "Very Strong"
 
+
 def analyze_password(password: str) -> PasswordAnalysisResult:
     """Run the password checks and scoring."""
     checks = check_character_classes(password)
-    score = calculate_strength_score(password, checks)
+    patterns = check_common_passwords(password)
+
+    score = calculate_strength_score(
+        password,
+        checks,
+        patterns,
+    )
+
     rating = determine_strength_rating(score)
 
     return PasswordAnalysisResult(
@@ -125,11 +193,14 @@ def analyze_password(password: str) -> PasswordAnalysisResult:
         score=score,
         rating=rating,
         checks=checks,
+        patterns=patterns,
     )
+
 
 def format_check_result(check_passed: bool) -> str:
     """Return a readable PASS or FAIL result."""
     return "[PASS]" if check_passed else "[FAIL]"
+
 
 def display_analysis_result(
     result: PasswordAnalysisResult,
@@ -156,6 +227,16 @@ def display_analysis_result(
         status = format_check_result(result.checks[check_name])
         print(f"{status} {label}")
 
+    print("\nCommon-password checks:")
+
+    if result.patterns["common_password"]:
+        print("[DETECTED] Exact common password")
+    elif result.patterns["common_word"]:
+        print("[DETECTED] Common password word")
+    else:
+        print("[PASS] No common password detected")
+
+
 def run_strength_analyzer() -> None:
     """Run the password strength analyzer."""
     print("PASSWORD STRENGTH ANALYZER")
@@ -165,6 +246,7 @@ def run_strength_analyzer() -> None:
     result = analyze_password(password)
 
     display_analysis_result(result)
+
 
 if __name__ == "__main__":
     run_strength_analyzer()
