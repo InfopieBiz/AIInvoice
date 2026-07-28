@@ -14,17 +14,30 @@
     - Structured analysis results
 
     Stage 3: Done
-    - Exact common-password checks
+    - Exact common-password detection
     - Common-word detection
     - Character-substitution normalization
     - Score penalties for predictable passwords
+
+    Stage 4: Done
+    - Detect Characters in sequence
+    - Detect Keyboard Patterns
+    - Detect Repeated Character 
+    - Detect Repeated Blocks 
+    - Detect Predictable Endings
+    - Score Penalties for detected patterns
 """
 
+import re
 import string
 from dataclasses import dataclass
 from getpass import getpass
 
-from config import COMMON_PASSWORDS, COMMON_PASSWORD_WORDS
+from config import (
+    COMMON_PASSWORDS,
+    COMMON_PASSWORD_WORDS,
+    KEYBOARD_PATTERNS,
+)
 
 
 @dataclass(frozen=True)
@@ -96,8 +109,107 @@ def normalize_for_pattern_matching(password: str) -> str:
     return password.lower().translate(substitutions)
 
 
-def check_common_passwords(password: str) -> dict[str, bool]:
-    """Check for exact common passwords and common words."""
+def contains_sequential_characters(
+    password: str,
+    minimum_sequence_length: int = 3,
+) -> bool:
+    """Detect ascending or descending letter and number sequences."""
+    lowered_password = password.lower()
+
+    if len(lowered_password) < minimum_sequence_length:
+        return False
+
+    for start_index in range(
+        len(lowered_password) - minimum_sequence_length + 1
+    ):
+        section = lowered_password[
+            start_index:start_index + minimum_sequence_length
+        ]
+
+        if not (section.isalpha() or section.isdigit()):
+            continue
+
+        differences = [
+            ord(section[index + 1]) - ord(section[index])
+            for index in range(len(section) - 1)
+        ]
+
+        ascending = all(
+            difference == 1
+            for difference in differences
+        )
+
+        descending = all(
+            difference == -1
+            for difference in differences
+        )
+
+        if ascending or descending:
+            return True
+
+    return False
+
+
+def contains_keyboard_pattern(password: str) -> bool:
+    """Detect common keyboard patterns and reversed patterns."""
+    lowered_password = password.lower()
+
+    return any(
+        pattern in lowered_password
+        or pattern[::-1] in lowered_password
+        for pattern in KEYBOARD_PATTERNS
+    )
+
+
+def contains_repeated_characters(password: str) -> bool:
+    """Detect one character repeated at least three times."""
+    return (
+        re.search(
+            r"(.)\1{2,}",
+            password,
+            re.IGNORECASE,
+        )
+        is not None
+    )
+
+
+def contains_repeated_block(password: str) -> bool:
+    """Detect a small block repeated multiple times."""
+    return (
+        re.search(
+            r"(.{2,6})\1+",
+            password,
+            re.IGNORECASE,
+        )
+        is not None
+    )
+
+
+def has_predictable_suffix(password: str) -> bool:
+    """Detect predictable password endings."""
+    predictable_suffix_pattern = (
+        r"(?:"
+        r"123|"
+        r"1234|"
+        r"12345|"
+        r"19\d{2}|"
+        r"20\d{2}"
+        r")"
+        r"[!@#$%^&*?.\-_+=,~():;]*$"
+    )
+
+    return (
+        re.search(
+            predictable_suffix_pattern,
+            password,
+            re.IGNORECASE,
+        )
+        is not None
+    )
+
+
+def check_common_patterns(password: str) -> dict[str, bool]:
+    """Check the password for common and predictable patterns."""
     lowercase_password = password.lower()
     normalized_password = normalize_for_pattern_matching(password)
 
@@ -113,9 +225,21 @@ def check_common_passwords(password: str) -> dict[str, bool]:
         )
     )
 
+    repeated_characters = contains_repeated_characters(password)
+
+    repeated_block = (
+        not repeated_characters
+        and contains_repeated_block(password)
+    )
+
     return {
         "common_password": exact_common_password,
         "common_word": common_word,
+        "sequence": contains_sequential_characters(password),
+        "keyboard_pattern": contains_keyboard_pattern(password),
+        "repeated_characters": repeated_characters,
+        "repeated_block": repeated_block,
+        "predictable_suffix": has_predictable_suffix(password),
     }
 
 
@@ -151,12 +275,49 @@ def calculate_strength_score(
         if check_passed
     )
 
+    has_common_pattern = (
+        pattern_checks["common_password"]
+        or pattern_checks["common_word"]
+    )
+
+    has_other_pattern = any(
+        pattern_checks[pattern_name]
+        for pattern_name in (
+            "sequence",
+            "keyboard_pattern",
+            "repeated_characters",
+            "repeated_block",
+            "predictable_suffix",
+        )
+    )
+
+    # Give up to 10 points when no patterns are found.
+    if not has_common_pattern:
+        score += 5
+
+    if not has_other_pattern:
+        score += 5
+
+    # Apply penalties for detected patterns.
     if pattern_checks["common_password"]:
         score -= 35
     elif pattern_checks["common_word"]:
         score -= 20
-    else:
-        score += 10
+
+    if pattern_checks["sequence"]:
+        score -= 10
+
+    if pattern_checks["keyboard_pattern"]:
+        score -= 10
+
+    if (
+        pattern_checks["repeated_characters"]
+        or pattern_checks["repeated_block"]
+    ):
+        score -= 10
+
+    if pattern_checks["predictable_suffix"]:
+        score -= 5
 
     return max(0, min(score, 100))
 
@@ -178,7 +339,7 @@ def determine_strength_rating(score: int) -> str:
 def analyze_password(password: str) -> PasswordAnalysisResult:
     """Run the password checks and scoring."""
     checks = check_character_classes(password)
-    patterns = check_common_passwords(password)
+    patterns = check_common_patterns(password)
 
     score = calculate_strength_score(
         password,
@@ -227,14 +388,29 @@ def display_analysis_result(
         status = format_check_result(result.checks[check_name])
         print(f"{status} {label}")
 
-    print("\nCommon-password checks:")
+    print("\nPattern checks:")
 
-    if result.patterns["common_password"]:
-        print("[DETECTED] Exact common password")
-    elif result.patterns["common_word"]:
-        print("[DETECTED] Common password word")
+    pattern_labels = {
+    "common_password": "Exact common password",
+    "common_word": "Common password word",
+    "sequence": "Sequential characters",
+    "keyboard_pattern": "Keyboard pattern",
+    "repeated_characters": "Repeated characters",
+    "repeated_block": "Repeated word or block",
+    "predictable_suffix": "Predictable ending",
+    }
+
+    detected_patterns = [
+        label
+        for pattern_name, label in pattern_labels.items()
+        if result.patterns[pattern_name]
+    ]
+
+    if detected_patterns:
+        for pattern in detected_patterns:
+            print(f"[DETECTED] {pattern}")
     else:
-        print("[PASS] No common password detected")
+        print("[PASS] No predictable patterns detected")
 
 
 def run_strength_analyzer() -> None:
@@ -243,6 +419,8 @@ def run_strength_analyzer() -> None:
     print("The password is hidden while typing.\n")
 
     password = read_password_securely()
+    # Remove the below line after testing PASSWORDS
+    print(f"[TEST] Password entered: {password}")  
     result = analyze_password(password)
 
     display_analysis_result(result)
