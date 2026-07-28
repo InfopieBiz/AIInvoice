@@ -43,10 +43,18 @@ The application so far includes:
     * Character-substitution normalization
     * Detection of easily guessed passwords like P@ssw0rd123
     * Penalties for common and predictable passwords
-    
+
+#### Stage 4 - Advanced Pattern Detection 
+
+    Completed: 
+    * Detection of sequential characters (like abc, 123, and 321)
+    * Detection of keyboard patterns (such as qwerty and asdf)
+    * Detection of repeated characters (like aaa and 111)
+    * Detection of repeated words or blocks (such as abcabc and passpass)
+    * Detection of predictable endings (such as 123, 1234, and years)
+    * Score penalties for every predictable pattern detected
 
 #### To be completed in the next stages: 
-    * Advanced pattern detection
     * Personalized recommendations
     * Final CLI integration and polish
     
