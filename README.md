@@ -54,8 +54,18 @@ The application so far includes:
     * Detection of predictable endings (such as 123, 1234, and years)
     * Score penalties for every predictable pattern detected
 
+#### Stage 5 - Personalized Recommendations
+
+    Completed: 
+    * Password length recommendations
+    * Suggestions for missing lowercase, uppercase letters, numbers, and special characters
+    * Common Passwords and Common Password Words Warnings
+    * Warnings about sequential characters and keyboard patterns
+    * Warnings for repeating characters, repeating blocks, and predictable endings
+    * Tips on how to make your passwords unique
+    * Recommendation to use a password manager you trust
+
 #### To be completed in the next stages: 
-    * Personalized recommendations
     * Final CLI integration and polish
     
 ## In the next phases
