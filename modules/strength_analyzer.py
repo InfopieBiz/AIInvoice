@@ -26,6 +26,13 @@
     - Detect Repeated Blocks 
     - Detect Predictable Endings
     - Score Penalties for detected patterns
+
+    Stage 5: Done 
+    - Password-length Recommendation 
+    - Suggestions for missing character types 
+    - Warnings for common predictable patterns 
+    - Password Uniqueness Advices 
+
 """
 
 import re
@@ -37,6 +44,7 @@ from config import (
     COMMON_PASSWORDS,
     COMMON_PASSWORD_WORDS,
     KEYBOARD_PATTERNS,
+    MAX_PASSWORD_LENGTH,
 )
 
 
@@ -48,10 +56,11 @@ class PasswordAnalysisResult:
     rating: str
     checks: dict[str, bool]
     patterns: dict[str, bool]
+    recommendations: list[str]
 
 
 def read_password_securely() -> str:
-    """Read a non-empty password without displaying it."""
+    """Read a valid password without displaying it."""
     while True:
         try:
             password = getpass(
@@ -63,6 +72,13 @@ def read_password_securely() -> str:
 
         if not password:
             print("[ERROR] Password cannot be empty.")
+            continue
+
+        if len(password) > MAX_PASSWORD_LENGTH:
+            print(
+                f"[ERROR] Password cannot exceed "
+                f"{MAX_PASSWORD_LENGTH} characters."
+            )
             continue
 
         return password
@@ -336,6 +352,96 @@ def determine_strength_rating(score: int) -> str:
     return "Very Strong"
 
 
+def generate_recommendations(
+    password: str,
+    character_checks: dict[str, bool],
+    pattern_checks: dict[str, bool],
+    score: int,
+) -> list[str]:
+    """Create recommendations based on detected weaknesses."""
+    recommendations: list[str] = []
+
+    password_length = len(password)
+
+    if password_length < 12:
+        recommendations.append(
+            "Increase the password length to at least 12 characters."
+        )
+    elif password_length < 16:
+        recommendations.append(
+            "Consider using 16 or more characters for stronger protection."
+        )
+
+    if not character_checks["lowercase"]:
+        recommendations.append(
+            "Add at least one lowercase letter."
+        )
+
+    if not character_checks["uppercase"]:
+        recommendations.append(
+            "Add at least one uppercase letter."
+        )
+
+    if not character_checks["digit"]:
+        recommendations.append(
+            "Add at least one number."
+        )
+
+    if not character_checks["special"]:
+        recommendations.append(
+            "Add at least one special character such as !, @, #, or $."
+        )
+
+    if pattern_checks["common_password"]:
+        recommendations.append(
+            "Do not use a commonly known password."
+        )
+
+    if pattern_checks["common_word"]:
+        recommendations.append(
+            "Avoid common password words, even when letters are replaced "
+            "with numbers or symbols."
+        )
+
+    if pattern_checks["sequence"]:
+        recommendations.append(
+            "Avoid sequential characters such as abc, 123, or 321."
+        )
+
+    if pattern_checks["keyboard_pattern"]:
+        recommendations.append(
+            "Avoid keyboard patterns such as qwerty, asdf, or 1q2w."
+        )
+
+    if pattern_checks["repeated_characters"]:
+        recommendations.append(
+            "Avoid repeating the same character several times."
+        )
+
+    if pattern_checks["repeated_block"]:
+        recommendations.append(
+            "Avoid repeating the same word or character block."
+        )
+
+    if pattern_checks["predictable_suffix"]:
+        recommendations.append(
+            "Avoid predictable endings such as 123, 1234, or a year."
+        )
+
+    if score >= 61:
+        recommendations.append(
+            "Keep this password unique and do not reuse it on other accounts."
+        )
+
+    if score >= 81:
+        recommendations.append(
+            "Store it in a trusted password manager rather than memorizing "
+            "many similar passwords."
+        )
+
+    return recommendations
+
+
 def analyze_password(password: str) -> PasswordAnalysisResult:
     """Run the password checks and scoring."""
     checks = check_character_classes(password)
@@ -349,12 +455,20 @@ def analyze_password(password: str) -> PasswordAnalysisResult:
 
     rating = determine_strength_rating(score)
 
+    recommendations = generate_recommendations(
+        password,
+        checks,
+        patterns,
+        score,
+    )
+
     return PasswordAnalysisResult(
         length=len(password),
         score=score,
         rating=rating,
         checks=checks,
         patterns=patterns,
+        recommendations=recommendations,
     )
 
 
@@ -391,13 +505,13 @@ def display_analysis_result(
     print("\nPattern checks:")
 
     pattern_labels = {
-    "common_password": "Exact common password",
-    "common_word": "Common password word",
-    "sequence": "Sequential characters",
-    "keyboard_pattern": "Keyboard pattern",
-    "repeated_characters": "Repeated characters",
-    "repeated_block": "Repeated word or block",
-    "predictable_suffix": "Predictable ending",
+        "common_password": "Exact common password",
+        "common_word": "Common password word",
+        "sequence": "Sequential characters",
+        "keyboard_pattern": "Keyboard pattern",
+        "repeated_characters": "Repeated characters",
+        "repeated_block": "Repeated word or block",
+        "predictable_suffix": "Predictable ending",
     }
 
     detected_patterns = [
@@ -411,6 +525,20 @@ def display_analysis_result(
             print(f"[DETECTED] {pattern}")
     else:
         print("[PASS] No predictable patterns detected")
+
+    print("\nRecommendations:")
+
+    for number, recommendation in enumerate(
+        result.recommendations,
+        start=1,
+    ):
+        print(f"{number}. {recommendation}")
+
+    print("\nImportant:")
+    print(
+         "This score is an educational estimate based on password "
+         "structure. It does not guarantee that a password is secure."
+    )
 
 
 def run_strength_analyzer() -> None:
