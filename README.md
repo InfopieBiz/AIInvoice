@@ -17,7 +17,7 @@ The application so far includes:
 * Menu option input validation 
 * A safe exit strategy
 
-### Phase 2 - Password Strength Analyzer > in progress 
+### Phase 2 - Password Strength Analyzer > Complete 
 
 #### Stage 1 - Basic Password Checks 
 
@@ -65,8 +65,15 @@ The application so far includes:
     * Tips on how to make your passwords unique
     * Recommendation to use a password manager you trust
 
-#### To be completed in the next stages: 
-    * Final CLI integration and polish
+#### Stage 6 - Final CLI integration and polish
+
+    Completed: 
+    * Clean and formatted results screen
+    * Detailed Results for characters and patterns
+    * Success and warning messages
+    * Clear-screen and pause helpers
+    * Local password reference removed after analysis
+    * Final testing and code cleanup
     
 ## In the next phases
 
@@ -78,7 +85,7 @@ The following will be implemented:
 
 ## Prerequisites 
 * Python 3.10+
-* No external python packages needed for Phase 1
+* No external python packages needed 
 
 ## Start the app
 
