@@ -1,38 +1,6 @@
 """
-    Basic password strength analyzer.
-
-    Stage 1: Done
-    - Secure hidden password input
-    - Empty-input validation
-    - Password-length checking, and checks for lowercase letters, uppercase letters, numbers, and special characters
-    - The results are displayed in the terminal using PASS or FAIL
-
-    Stage 2: Done
-    - Scoring based on password length
-    - Character-variety points
-    - Strength Rating 
-    - Structured analysis results
-
-    Stage 3: Done
-    - Exact common-password detection
-    - Common-word detection
-    - Character-substitution normalization
-    - Score penalties for predictable passwords
-
-    Stage 4: Done
-    - Detect Characters in sequence
-    - Detect Keyboard Patterns
-    - Detect Repeated Character 
-    - Detect Repeated Blocks 
-    - Detect Predictable Endings
-    - Score Penalties for detected patterns
-
-    Stage 5: Done 
-    - Password-length Recommendation 
-    - Suggestions for missing character types 
-    - Warnings for common predictable patterns 
-    - Password Uniqueness Advices 
-
+  Password strength analysis module. 
+  Checks password length, diversity of characters, common passwords, predictable patterns, and provides personalized suggestions.
 """
 
 import re
@@ -45,6 +13,16 @@ from config import (
     COMMON_PASSWORD_WORDS,
     KEYBOARD_PATTERNS,
     MAX_PASSWORD_LENGTH,
+)
+
+
+from utils.cli_helpers import (
+    clear_screen,
+    pause,
+    print_error,
+    print_header,
+    print_success,
+    print_warning,
 )
 
 
@@ -67,16 +45,16 @@ def read_password_securely() -> str:
                 "Enter a password to analyze: "
             )
         except EOFError:
-            print("[ERROR] No password input was received.")
+            print_error("No password input was received.")
             continue
 
         if not password:
-            print("[ERROR] Password cannot be empty.")
+            print_error("Password cannot be empty.")
             continue
 
         if len(password) > MAX_PASSWORD_LENGTH:
-            print(
-                f"[ERROR] Password cannot exceed "
+            print_error(
+                f"Password cannot exceed "
                 f"{MAX_PASSWORD_LENGTH} characters."
             )
             continue
@@ -480,13 +458,13 @@ def format_check_result(check_passed: bool) -> str:
 def display_analysis_result(
     result: PasswordAnalysisResult,
 ) -> None:
-    """Display the password analysis."""
-    print("\n" + "-" * 50)
+    """Display the complete password analysis."""
+    print("\n" + "-" * 64)
     print("PASSWORD ANALYSIS RESULT")
-    print("-" * 50)
+    print("-" * 64)
 
     print(f"\nPassword length: {result.length}")
-    print(f"Strength score: {result.score}/100")
+    print(f"Strength score:  {result.score}/100")
     print(f"Strength rating: {result.rating}")
 
     print("\nCharacter checks:")
@@ -536,22 +514,47 @@ def display_analysis_result(
 
     print("\nImportant:")
     print(
-         "This score is an educational estimate based on password "
-         "structure. It does not guarantee that a password is secure."
+        "This score is an educational estimate based on password "
+        "structure. It does not guarantee that a password is secure."
     )
 
 
 def run_strength_analyzer() -> None:
-    """Run the password strength analyzer."""
-    print("PASSWORD STRENGTH ANALYZER")
-    print("The password is hidden while typing.\n")
+    """Run the complete password strength analyzer."""
+    clear_screen()
+    print_header("PASSWORD STRENGTH ANALYZER")
+
+    print(
+        "\nThis module evaluates password length, character variety, "
+        "and predictable patterns."
+    )
+
+    print(
+        "The password is hidden while typing and is not saved.\n"
+    )
 
     password = read_password_securely()
-    # Remove the below line after testing PASSWORDS
-    print(f"[TEST] Password entered: {password}")  
     result = analyze_password(password)
 
     display_analysis_result(result)
+
+    if result.rating in {"Very Weak", "Weak"}:
+        print_warning(
+            "This password has major weaknesses and should be improved."
+        )
+    elif result.rating == "Moderate":
+        print_warning(
+            "This password has some strength but still needs improvement."
+        )
+    else:
+        print_success(
+            "This password has a reasonably strong structure."
+        )
+
+    # Stop intentionally retaining the local password reference.
+    del password
+
+    pause()
 
 
 if __name__ == "__main__":
