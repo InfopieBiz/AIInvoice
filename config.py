@@ -1,5 +1,8 @@
 """Application-wide configuration values."""
 
+from pathlib import Path
+
+
 APP_NAME = "Password Security Analyzer"
 APP_VERSION = "1.0.0"
 
@@ -85,3 +88,8 @@ KEYBOARD_PATTERNS = (
     "1q2w",
     "1q2w3e",
 )
+
+
+# Project file locations
+PROJECT_ROOT = Path(__file__).resolve().parent
+WORDLIST_PATH = PROJECT_ROOT / "data" / "common_passwords.txt"
