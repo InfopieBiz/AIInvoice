@@ -74,11 +74,27 @@ The application so far includes:
     * Clear-screen and pause helpers
     * Local password reference removed after analysis
     * Final testing and code cleanup
-    
+
+### Phase 3 - Dictionary Attack Simulator > in progress
+
+#### Stage 1 - Wordlist Configuration and Loader
+
+    Completed:
+    * Added a local common-password wordlist
+    * Set the wordlist path using pathlib
+    * Added UTF-8 loading, including blank-line removal
+    * Added controlled handling for missing, unreadable, invalid and empty files
+
+#### In the next Stages 
+
+    The following will be implemented:
+    * Dictionary Comparison Engine
+    * Interactive Dictionary Attack Screen
+    * Final Testing and Documentation
+
 ## In the next phases
 
 The following will be implemented:
-* Dictionary Attack Simulator
 * Brute Force Attack Simulator
 * Secure Password Storage
 * Results Dashboard
