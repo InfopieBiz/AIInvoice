@@ -85,10 +85,20 @@ The application so far includes:
     * Added UTF-8 loading, including blank-line removal
     * Added controlled handling for missing, unreadable, invalid and empty files
 
+#### Stage 2 - Dictionary Comparison Engine
+
+    Completed:
+    * Added a structured attack result using a frozen dataclass
+    * Added exact and case sensitive password comparison
+    * Added attempt counter and total candidate tracking
+    * Added time measurement using perf_counter
+    * Added immediate stopping when a match is found
+    * Added average attempts-per-second calculation
+    * Manual Testing of found, not-found, case-sensitive, and attempt-count results
+
 #### In the next Stages 
 
     The following will be implemented:
-    * Dictionary Comparison Engine
     * Interactive Dictionary Attack Screen
     * Final Testing and Documentation
 
