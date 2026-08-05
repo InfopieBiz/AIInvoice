@@ -2,7 +2,7 @@
 
 Stage 1: Wordlist Configuration and Loader > Completed
 
-What have been done:
+    What have been done:
     - Created the local wordlist at data/common_passwords.txt
     - Added one common password candidate per line
     - Configured the wordlist path using pathlib
@@ -15,11 +15,26 @@ What have been done:
     - Added handling for invalid UTF-8 content
     - Added handling for other file-reading errors
     - Rejected empty and blank-only wordlists
+
+Stage 2: Dictionary Comparison Engine > Complete
+
+    What has been done:
+    - Added DictionaryAttackResult using a frozen dataclass
+    - Added exact and case-sensitive password comparison
+    - Added an attempt counter starting from zero
+    - Increased the attempt counter once per tested candidate
+    - Added total wordlist candidate tracking
+    - Added execution-time measurement using perf_counter
+    - Added immediate stopping when a password match is found
+    - Returned structured found and not-found results
+    - Added average attempts-per-second calculation  
 """
 
 from __future__ import annotations
 
+from dataclasses import dataclass
 from pathlib import Path
+from time import perf_counter
 
 from utils.cli_helpers import clear_screen, pause, print_header
 
@@ -28,22 +43,22 @@ class WordlistLoadError(Exception):
     """Triggered when the dictionary wordlist cannot be loaded."""
 
 
+@dataclass(frozen=True)
+class DictionaryAttackResult:
+    """Store the result of a dictionary attack simulation."""
+
+    success: bool
+    attempts: int
+    total_candidates: int
+    elapsed_seconds: float
+
+
 def load_wordlist(file_path: Path) -> list[str]:
     """
     Load password candidates from a text file.
 
     Blank lines are ignored. Each remaining line becomes one
     dictionary attack candidate.
-
-    Args:
-        file_path: Location of the wordlist file.
-
-    Returns:
-        A list containing password candidates in file order.
-
-    Raises:
-        WordlistLoadError: If the file is missing, unreadable,
-            incorrectly encoded, or empty.
     """
     try:
         with file_path.open(
@@ -84,6 +99,58 @@ def load_wordlist(file_path: Path) -> list[str]:
     return candidates
 
 
+def dictionary_attack(
+    target_password: str,
+    wordlist: list[str],
+) -> DictionaryAttackResult:
+    """
+    Attempt to find a password through exact dictionary comparison.
+
+    The comparison is case-sensitive. The function stops immediately
+    after finding a matching candidate.
+    """
+    attempts = 0
+    start_time = perf_counter()
+
+    for candidate in wordlist:
+        attempts += 1
+
+        if candidate == target_password:
+            elapsed_seconds = perf_counter() - start_time
+
+            return DictionaryAttackResult(
+                success=True,
+                attempts=attempts,
+                total_candidates=len(wordlist),
+                elapsed_seconds=elapsed_seconds,
+            )
+
+    elapsed_seconds = perf_counter() - start_time
+
+    return DictionaryAttackResult(
+        success=False,
+        attempts=attempts,
+        total_candidates=len(wordlist),
+        elapsed_seconds=elapsed_seconds,
+    )
+
+
+def calculate_attempt_rate(
+    attempts: int,
+    elapsed_seconds: float,
+) -> float:
+    """
+    Calculate the average number of attempts per second.
+
+    A zero value is returned when the measured duration is zero
+    or negative.
+    """
+    if elapsed_seconds <= 0:
+        return 0.0
+
+    return attempts / elapsed_seconds
+
+
 def run_dictionary_attack() -> None:
     """Display the placeholder dictionary attack screen."""
     clear_screen()
@@ -91,6 +158,8 @@ def run_dictionary_attack() -> None:
 
     print(
         """
+    The dictionary wordlist loader and comparison engine are complete.
+
     This module will eventually:
 
     - Ask the user to enter a test password
