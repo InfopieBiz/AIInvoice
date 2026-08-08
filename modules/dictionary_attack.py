@@ -28,15 +28,35 @@ Stage 2: Dictionary Comparison Engine > Complete
     - Added immediate stopping when a password match is found
     - Returned structured found and not-found results
     - Added average attempts-per-second calculation  
+
+Stage 3: Interactive Dictionary Attack Screen > Complete
+
+    What has been done:
+    - Secure loading and setup of local wordlists
+    - Dictionary comparison, case sensitive and exact
+    - Secure hidden password input and validation
+    - Found and not-found result display
+    - Calculation of attack-rate and security advice
+    - Safe wordlist error handling through the CLI
 """
 
 from __future__ import annotations
 
 from dataclasses import dataclass
+from getpass import getpass
 from pathlib import Path
 from time import perf_counter
 
-from utils.cli_helpers import clear_screen, pause, print_header
+from config import MAX_PASSWORD_LENGTH, WORDLIST_PATH
+from utils.cli_helpers import (
+    clear_screen,
+    pause,
+    print_error,
+    print_header,
+    print_success,
+    print_warning,
+)
+
 
 
 class WordlistLoadError(Exception):
@@ -135,6 +155,33 @@ def dictionary_attack(
     )
 
 
+def read_password_securely() -> str:
+    """ Request a password without displaying it in the terminal, rejects empty and long passwords. """
+
+    while True:
+        try:
+            password = getpass(
+                "Enter a password for the dictionary test: "
+            )
+
+        except EOFError:
+            print_error("No password input was received.")
+            continue
+
+        if not password:
+            print_error("Password cannot be empty.")
+            continue
+
+        if len(password) > MAX_PASSWORD_LENGTH:
+            print_error(
+                f"Password cannot exceed "
+                f"{MAX_PASSWORD_LENGTH} characters."
+            )
+            continue
+
+        return password
+
+    
 def calculate_attempt_rate(
     attempts: int,
     elapsed_seconds: float,
@@ -151,26 +198,110 @@ def calculate_attempt_rate(
     return attempts / elapsed_seconds
 
 
+def display_attack_result(
+    result: DictionaryAttackResult,
+) -> None:
+    """Display the dictionary attack result without showing the password."""
+
+    print("\n" + "-" * 64)
+    print("DICTIONARY ATTACK RESULT")
+    print("-" * 64)
+
+    if result.success:
+        print_success(
+            "The password was found in the dictionary."
+        )
+
+        print(
+            "\nThis password is vulnerable to a dictionary attack using the current wordlist."
+        )
+
+    else:
+        print_warning(
+            "The password was not found in the current dictionary."
+        )
+
+        print(
+            "\nThis does not prove that the password is secure. "
+            "Another or larger wordlist may still contain it."
+        )
+
+    attempt_rate = calculate_attempt_rate(
+        result.attempts,
+        result.elapsed_seconds,
+    )
+
+    print(f"\nAttempts made:       {result.attempts:,}")
+    print(f"Wordlist candidates: {result.total_candidates:,}")
+    print(
+        f"Time taken:          "
+        f"{result.elapsed_seconds:.9f} seconds"
+    )
+
+    if attempt_rate > 0:
+        print(
+            f"Average speed:       "
+            f"{attempt_rate:,.0f} attempts/second"
+        )
+
+    if result.success:
+        print(
+            "\nRecommendation:\n"
+            "Avoid common passwords, common words, names, dates, "
+            "and predictable variations."
+        )
+
+    else:
+        print(
+            "\nRecommendation:\n"
+            "Continue using a long, unique password and do not reuse "
+            "it across multiple accounts."
+        )
+
+
 def run_dictionary_attack() -> None:
-    """Display the placeholder dictionary attack screen."""
+    """Run the interactive dictionary attack simulator."""
     clear_screen()
     print_header("DICTIONARY ATTACK SIMULATOR")
 
     print(
-        """
-    The dictionary wordlist loader and comparison engine are complete.
-
-    This module will eventually:
-
-    - Ask the user to enter a test password
-    - Load common passwords from a local wordlist
-    - Compare each dictionary entry with the test password
-    - Count the number of attempts
-    - Measure the time taken
-    - Display whether the password was found
-
-    Status: Not implemented yet.
-    """
+        "\nThis educational module compares a user-entered password "
+        "against a local list of common passwords."
     )
+
+    print(
+        "\nComparison mode: Exact and case-sensitive"
+        "\nThe entered password is hidden and is not saved.\n"
+    )
+
+    try:
+        wordlist = load_wordlist(WORDLIST_PATH)
+
+    except WordlistLoadError as error:
+        print_error(str(error))
+
+        print(
+            "\nThe dictionary attack cannot run until a valid "
+            "wordlist file is available."
+        )
+
+        pause()
+        return
+
+    print_success(
+        f"Loaded {len(wordlist):,} password candidates."
+    )
+
+    password = read_password_securely()
+
+    result = dictionary_attack(
+        target_password=password,
+        wordlist=wordlist,
+    )
+
+    display_attack_result(result)
+    
+    # Remove the local reference when it is no longer needed.
+    del password
 
     pause()
