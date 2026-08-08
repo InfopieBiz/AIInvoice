@@ -96,10 +96,19 @@ The application so far includes:
     * Added average attempts-per-second calculation
     * Manual Testing of found, not-found, case-sensitive, and attempt-count results
 
+#### Stage 3 - Interactive Dictionary Attack Screen
+
+    Completed:
+    * Secure loading and setup of local wordlists
+    * Dictionary comparison, case sensitive and exact
+    * Secure hidden password input and validation
+    * Found and not-found result display
+    * Calculation of attack-rate and security advice
+    * Safe wordlist error handling through the CLI
+
 #### In the next Stages 
 
     The following will be implemented:
-    * Interactive Dictionary Attack Screen
     * Final Testing and Documentation
 
 ## In the next phases
