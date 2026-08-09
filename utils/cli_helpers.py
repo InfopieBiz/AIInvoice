@@ -64,13 +64,6 @@ def get_menu_choice(
 ) -> str:
     """
     Repeatedly request input until the user enters a valid menu choice.
-
-    Args:
-        valid_choices: Values accepted by the menu.
-        prompt: Message displayed before reading input.
-
-    Returns:
-        A validated menu choice as a string.
     """
     allowed_choices = set(valid_choices)
 
@@ -91,3 +84,34 @@ def get_menu_choice(
         except KeyboardInterrupt:
             print("\n")
             raise
+
+
+def read_integer(
+    prompt: str,
+    minimum: int,
+    maximum: int,
+) -> int:
+    """
+    Request an integer within a permitted range.
+    """
+    while True:
+        try:
+            raw_value = input(prompt).strip()
+            value = int(raw_value)
+
+        except ValueError:
+            print_error("Please enter a whole number.")
+            continue
+
+        except EOFError:
+            print_error("No input was received.")
+            continue
+
+        if value < minimum or value > maximum:
+            print_error(
+                f"Please enter a value between "
+                f"{minimum} and {maximum}."
+            )
+            continue
+
+        return value
