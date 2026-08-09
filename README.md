@@ -75,7 +75,7 @@ The application so far includes:
     * Local password reference removed after analysis
     * Final testing and code cleanup
 
-### Phase 3 - Dictionary Attack Simulator > in progress
+### Phase 3 - Dictionary Attack Simulator > Complete
 
 #### Stage 1 - Wordlist Configuration and Loader
 
@@ -106,10 +106,14 @@ The application so far includes:
     * Calculation of attack-rate and security advice
     * Safe wordlist error handling through the CLI
 
-#### In the next Stages 
+#### Stage 4 - Final Testing and Documentation
 
-    The following will be implemented:
-    * Final Testing and Documentation
+    Completed:
+    * Performed extensive manual testing of Dictionary Attack Simulator
+    * Found and not found password results verified
+    * Verified case sensitive comparison, execution time and attempt counting
+    * Validation for blank input and max length of password
+    * Verified missing and empty wordlist error handling
 
 ## In the next phases
 
