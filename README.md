@@ -115,10 +115,30 @@ The application so far includes:
     * Validation for blank input and max length of password
     * Verified missing and empty wordlist error handling
 
+### Phase 4 - Automatic Brute-Force Attack Simulator > In Progress
+
+#### Stage 1 - Brute-Force Foundations
+
+    Completed:
+    * Added safety limits for brute-force testing
+    * Added validation for the maximum password length
+    * Added eight character sets to test in order
+    * Added a result structure for brute-force attempts
+    * Added theoretical search-space calculation
+    * Added memory-efficient password combination generation
+    * Added checks to match passwords with the correct character set
+
+### In the next stages
+
+The following will be implemented:
+* Build the Single-Charset Brute-Force Engine
+* Build the Automatic All-Charset Controller
+* Build the Interactive CLI and Reporting
+* Complete Testing, Documentation and Final Verification
+
 ## In the next phases
 
 The following will be implemented:
-* Brute Force Attack Simulator
 * Secure Password Storage
 * Results Dashboard
 
