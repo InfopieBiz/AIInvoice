@@ -93,3 +93,9 @@ KEYBOARD_PATTERNS = (
 # Project file locations
 PROJECT_ROOT = Path(__file__).resolve().parent
 WORDLIST_PATH = PROJECT_ROOT / "data" / "common_passwords.txt"
+
+# Brute-force demonstration safety limits
+MAX_BRUTE_FORCE_LENGTH = 6
+MAX_BRUTE_FORCE_ATTEMPTS = 1_000_000
+BRUTE_FORCE_TIMEOUT_SECONDS = 10.0
+BRUTE_FORCE_PROGRESS_INTERVAL = 50_000 
