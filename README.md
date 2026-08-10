@@ -128,10 +128,21 @@ The application so far includes:
     * Added memory-efficient password combination generation
     * Added checks to match passwords with the correct character set
 
+#### Stage 2 - Single-Charset Brute-Force Engine
+
+    Completed:
+    * Added the core brute-force search engine for one character set
+    * Added exact case sensitive password comparison
+    * Added attempt count and execution time
+    * Added timeout and max attempts stops 
+    * Added character set compatibility checking
+    * Added safe cancellation and search-exhausted handling
+    * Added structured brute-force results
+
 ### In the next stages
 
 The following will be implemented:
-* Build the Single-Charset Brute-Force Engine
+
 * Build the Automatic All-Charset Controller
 * Build the Interactive CLI and Reporting
 * Complete Testing, Documentation and Final Verification
