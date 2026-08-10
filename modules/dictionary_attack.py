@@ -1,43 +1,5 @@
-"""Dictionary attack simulator module.
-
-Stage 1: Wordlist Configuration and Loader > Completed
-
-    What have been done:
-    - Created the local wordlist at data/common_passwords.txt
-    - Added one common password candidate per line
-    - Configured the wordlist path using pathlib
-    - Added UTF-8 wordlist loading
-    - Preserved the original wordlist order
-    - Ignored empty and whitespace-only lines
-    - Added a custom WordlistLoadError exception
-    - Added handling for missing wordlist files
-    - Added handling for permission errors
-    - Added handling for invalid UTF-8 content
-    - Added handling for other file-reading errors
-    - Rejected empty and blank-only wordlists
-
-Stage 2: Dictionary Comparison Engine > Complete
-
-    What has been done:
-    - Added DictionaryAttackResult using a frozen dataclass
-    - Added exact and case-sensitive password comparison
-    - Added an attempt counter starting from zero
-    - Increased the attempt counter once per tested candidate
-    - Added total wordlist candidate tracking
-    - Added execution-time measurement using perf_counter
-    - Added immediate stopping when a password match is found
-    - Returned structured found and not-found results
-    - Added average attempts-per-second calculation  
-
-Stage 3: Interactive Dictionary Attack Screen > Complete
-
-    What has been done:
-    - Secure loading and setup of local wordlists
-    - Dictionary comparison, case sensitive and exact
-    - Secure hidden password input and validation
-    - Found and not-found result display
-    - Calculation of attack-rate and security advice
-    - Safe wordlist error handling through the CLI
+"""
+Dictionary attack simulator module.
 """
 
 from __future__ import annotations
