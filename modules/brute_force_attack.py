@@ -6,7 +6,9 @@ import string
 from collections.abc import Iterator
 from dataclasses import dataclass
 from itertools import product
+from time import perf_counter
 
+from config import BRUTE_FORCE_PROGRESS_INTERVAL
 from utils.cli_helpers import clear_screen, pause, print_header
 
 
@@ -110,6 +112,122 @@ def calculate_attempt_rate(
 
     return attempts / elapsed_seconds
 
+
+def brute_force_attack(
+    target_password: str,
+    charset_name: str,
+    charset: str,
+    maximum_length: int,
+    maximum_attempts: int,
+    timeout_seconds: float,
+    progress_interval: int = BRUTE_FORCE_PROGRESS_INTERVAL,
+) -> BruteForceResult:
+    """Run a controlled brute-force search against one character set."""
+
+    search_space = calculate_search_space(
+        len(charset),
+        maximum_length,
+    )
+
+    if not password_matches_charset(
+        target_password,
+        charset,
+    ):
+        return BruteForceResult(
+            charset_name=charset_name,
+            success=False,
+            attempts=0,
+            elapsed_seconds=0.0,
+            stop_reason="charset_mismatch",
+            search_space=search_space,
+            charset_size=len(charset),
+            maximum_length=maximum_length,
+        )
+
+    attempts = 0
+    start_time = perf_counter()
+
+    try:
+        for candidate in generate_combinations(
+            charset,
+            maximum_length,
+        ):
+            attempts += 1
+
+            if candidate == target_password:
+                elapsed_seconds = (
+                    perf_counter() - start_time
+                )
+
+                return BruteForceResult(
+                    charset_name=charset_name,
+                    success=True,
+                    attempts=attempts,
+                    elapsed_seconds=elapsed_seconds,
+                    stop_reason="found",
+                    search_space=search_space,
+                    charset_size=len(charset),
+                    maximum_length=maximum_length,
+                )
+
+            elapsed_seconds = (
+                perf_counter() - start_time
+            )
+
+            if attempts >= maximum_attempts:
+                return BruteForceResult(
+                    charset_name=charset_name,
+                    success=False,
+                    attempts=attempts,
+                    elapsed_seconds=elapsed_seconds,
+                    stop_reason="maximum_attempts",
+                    search_space=search_space,
+                    charset_size=len(charset),
+                    maximum_length=maximum_length,
+                )
+
+            if elapsed_seconds >= timeout_seconds:
+                return BruteForceResult(
+                    charset_name=charset_name,
+                    success=False,
+                    attempts=attempts,
+                    elapsed_seconds=elapsed_seconds,
+                    stop_reason="timeout",
+                    search_space=search_space,
+                    charset_size=len(charset),
+                    maximum_length=maximum_length,
+                )
+
+    except KeyboardInterrupt:
+        elapsed_seconds = (
+            perf_counter() - start_time
+        )
+
+        return BruteForceResult(
+            charset_name=charset_name,
+            success=False,
+            attempts=attempts,
+            elapsed_seconds=elapsed_seconds,
+            stop_reason="cancelled",
+            search_space=search_space,
+            charset_size=len(charset),
+            maximum_length=maximum_length,
+        )
+
+    elapsed_seconds = (
+        perf_counter() - start_time
+    )
+
+    return BruteForceResult(
+        charset_name=charset_name,
+        success=False,
+        attempts=attempts,
+        elapsed_seconds=elapsed_seconds,
+        stop_reason="search_exhausted",
+        search_space=search_space,
+        charset_size=len(charset),
+        maximum_length=maximum_length,
+    )
 
 def run_brute_force_attack() -> None:
     """Display the placeholder brute-force attack screen."""
