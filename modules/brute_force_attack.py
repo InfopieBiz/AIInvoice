@@ -8,7 +8,7 @@ from dataclasses import dataclass
 from itertools import product
 from time import perf_counter
 
-from config import BRUTE_FORCE_PROGRESS_INTERVAL
+from config import BRUTE_FORCE_PROGRESS_INTERVAL, MAX_BRUTE_FORCE_ATTEMPTS, BRUTE_FORCE_TIMEOUT_SECONDS
 from utils.cli_helpers import clear_screen, pause, print_header
 
 
@@ -228,6 +228,90 @@ def brute_force_attack(
         charset_size=len(charset),
         maximum_length=maximum_length,
     )
+
+
+def brute_force_all_charsets(
+    target_password: str,
+    maximum_length: int,
+) -> list[BruteForceResult]:
+    """Automatically test supported character sets in order."""
+
+    if len(target_password) > maximum_length:
+        return []
+
+    results: list[BruteForceResult] = []
+
+    overall_start = perf_counter()
+    total_attempts = 0
+
+    for charset_name, charset in CHARACTER_SETS:
+        overall_elapsed = (
+            perf_counter() - overall_start
+        )
+
+        remaining_attempts = (
+            MAX_BRUTE_FORCE_ATTEMPTS
+            - total_attempts
+        )
+
+        remaining_time = (
+            BRUTE_FORCE_TIMEOUT_SECONDS
+            - overall_elapsed
+        )
+
+        if remaining_attempts <= 0:
+            break
+
+        if remaining_time <= 0:
+            break
+
+        if not password_matches_charset(
+            target_password,
+            charset,
+        ):
+            search_space = calculate_search_space(
+                len(charset),
+                maximum_length,
+            )
+
+            result = BruteForceResult(
+                charset_name=charset_name,
+                success=False,
+                attempts=0,
+                elapsed_seconds=0.0,
+                stop_reason="charset_mismatch",
+                search_space=search_space,
+                charset_size=len(charset),
+                maximum_length=maximum_length,
+            )
+
+            results.append(result)
+            continue
+
+        result = brute_force_attack(
+            target_password=target_password,
+            charset_name=charset_name,
+            charset=charset,
+            maximum_length=maximum_length,
+            maximum_attempts=remaining_attempts,
+            timeout_seconds=remaining_time,
+        )
+
+        results.append(result)
+        total_attempts += result.attempts
+
+        if result.success:
+            break
+
+        if result.stop_reason in {
+            "cancelled",
+            "maximum_attempts",
+            "timeout",
+        }:
+            break
+
+    return results
+
 
 def run_brute_force_attack() -> None:
     """Display the placeholder brute-force attack screen."""
