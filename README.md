@@ -139,11 +139,19 @@ The application so far includes:
     * Added safe cancellation and search-exhausted handling
     * Added structured brute-force results
 
+#### Stage 3 - Automatic All-Charset Controller
+
+    Completed:
+    * Added automatic testing of supported character sets, in order
+    * Added skipping of incompatible character sets with zero attempts
+    * Added global attempt and timeout limits to all charsets
+    * Added auto stop when password is found
+    * Added safe stop for cancel, timeout and max attempts
+    * Added maximum length check before brute-force testing
+
 ### In the next stages
 
 The following will be implemented:
-
-* Build the Automatic All-Charset Controller
 * Build the Interactive CLI and Reporting
 * Complete Testing, Documentation and Final Verification
 
