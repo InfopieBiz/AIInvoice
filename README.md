@@ -149,10 +149,20 @@ The application so far includes:
     * Added safe stop for cancel, timeout and max attempts
     * Added maximum length check before brute-force testing
 
+#### Stage 4 - Interactive CLI and Reporting
+
+Completed:
+* Added a secure hidden password input and validation
+* Added maximum search length input
+* Added automatic character-set overview including theoretical search spaces
+* Added charset-aware progress display
+* Added per-character-set and overall result reporting
+* Added calculation of attempt-rate and report of safety-limit.
+* Integrated the completed brute-force simulator with menu option 3
+
 ### In the next stages
 
 The following will be implemented:
-* Build the Interactive CLI and Reporting
 * Complete Testing, Documentation and Final Verification
 
 ## In the next phases
