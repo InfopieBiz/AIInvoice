@@ -151,14 +151,14 @@ The application so far includes:
 
 #### Stage 4 - Interactive CLI and Reporting
 
-Completed:
-* Added a secure hidden password input and validation
-* Added maximum search length input
-* Added automatic character-set overview including theoretical search spaces
-* Added charset-aware progress display
-* Added per-character-set and overall result reporting
-* Added calculation of attempt-rate and report of safety-limit.
-* Integrated the completed brute-force simulator with menu option 3
+    Completed:
+    * Added a secure hidden password input and validation
+    * Added maximum search length input
+    * Added automatic character-set overview including theoretical search spaces
+    * Added charset-aware progress display
+    * Added per-character-set and overall result reporting
+    * Added calculation of attempt-rate and report of safety-limit.
+    * Integrated the completed brute-force simulator with menu option 3
 
 ### In the next stages
 
