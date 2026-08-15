@@ -117,6 +117,18 @@ The application so far includes:
 
 ### Phase 4 - Automatic Brute-Force Attack Simulator > In Progress
 
+The brute-force simulator tries the character sets it supports in order.
+
+The user does not manually select the character set.
+
+Incompatible charsets are skipped without producing password candidates.
+
+compatible sets are tested from small charsets to large charsets.
+
+There is a maximum attempt limit and timeout for the whole automatic session.
+
+The search terminates when the password is found, the global attempt limit is reached, the timeout is reached, or the user cancels.
+
 #### Stage 1 - Brute-Force Foundations
 
     Completed:
@@ -160,10 +172,15 @@ The application so far includes:
     * Added calculation of attempt-rate and report of safety-limit.
     * Integrated the completed brute-force simulator with menu option 3
 
-### In the next stages
+#### Stage 5 - Testing, Documentation and Final Verification
 
-The following will be implemented:
-* Complete Testing, Documentation and Final Verification
+    Completed:
+    * Performed manual testing of the Automatic Brute-Force Simulator
+    * Verified automatic character-set selection and skipped incompatible sets
+    * Verified password discovery, attempt counting and execution timing
+    * Verified global attempt and timeout safety limits
+    * Verified progress display and safe Ctrl+C cancellation
+    * Verified password and maximum-length input validation
 
 ## In the next phases
 
