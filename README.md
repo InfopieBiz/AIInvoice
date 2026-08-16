@@ -115,7 +115,7 @@ The application so far includes:
     * Validation for blank input and max length of password
     * Verified missing and empty wordlist error handling
 
-### Phase 4 - Automatic Brute-Force Attack Simulator > In Progress
+### Phase 4 - Automatic Brute-Force Attack Simulator > Complete
 
 The brute-force simulator tries the character sets it supports in order.
 
@@ -182,10 +182,19 @@ The search terminates when the password is found, the global attempt limit is re
     * Verified progress display and safe Ctrl+C cancellation
     * Verified password and maximum-length input validation
 
+### Phase 5 - Secure Storage Demonstration > Complete
+
+    Shows the difference between storing passwords as plaintext and storing a SHA-256 hash.
+
+    Completed:
+    * Implemented SHA-256 password hashing using hashlib
+    * Secure hidden password input and validation
+    * Demonstrated difference between plaintext and hashed password storage
+    * Verified SHA-256 hashing consistency and output formatting
+
 ## In the next phases
 
 The following will be implemented:
-* Secure Password Storage
 * Results Dashboard
 
 ## Prerequisites 
