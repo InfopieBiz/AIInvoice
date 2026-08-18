@@ -184,7 +184,7 @@ The search terminates when the password is found, the global attempt limit is re
 
 ### Phase 5 - Secure Storage Demonstration > Complete
 
-    Shows the difference between storing passwords as plaintext and storing a SHA-256 hash.
+Shows the difference between storing passwords as plaintext and storing a SHA-256 hash.
 
     Completed:
     * Implemented SHA-256 password hashing using hashlib
@@ -192,10 +192,22 @@ The search terminates when the password is found, the global attempt limit is re
     * Demonstrated difference between plaintext and hashed password storage
     * Verified SHA-256 hashing consistency and output formatting
 
-## In the next phases
+### Phase 6 - Results Dashboard > In Progress
 
-The following will be implemented:
-* Results Dashboard
+#### Stage 1 - Session Result Foundation
+
+    Completed:
+    * Created shared dataclass for dashboard records
+    * Added core fields (test type, status, rating, attempts, execution time, timestamp), results are immutable (frozen dataclass).
+    * Ensured no sensitive data (passwords, hashes) is stored in results
+
+#### In the next stages
+
+    The following will be implemented:
+    * Session Storage and Module Integration
+    * Build the Results Dashboard screen and display recorded session results
+    * Add the security summary and clear-session option
+    * Complete manual testing and final documentation for the dashboard
 
 ## Prerequisites 
 * Python 3.10+
