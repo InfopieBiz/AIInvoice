@@ -201,10 +201,18 @@ Shows the difference between storing passwords as plaintext and storing a SHA-25
     * Added core fields (test type, status, rating, attempts, execution time, timestamp), results are immutable (frozen dataclass).
     * Ensured no sensitive data (passwords, hashes) is stored in results
 
+#### Stage 2 - Session Storage and Module Integration
+
+    Completed:
+    * Added one shared session results list for current application session
+    * Connected the Strength Analyzer, Dictionary Attack, Brute-Force Simulator, and Secure Storage Demonstration to session tracking
+    * Added summary result record after finished tests
+    * Added timestamps and execution information to session logs
+    * Kept results only in memory, vanishing when the application closes
+    
 #### In the next stages
 
     The following will be implemented:
-    * Session Storage and Module Integration
     * Build the Results Dashboard screen and display recorded session results
     * Add the security summary and clear-session option
     * Complete manual testing and final documentation for the dashboard
