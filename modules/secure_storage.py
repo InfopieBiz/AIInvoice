@@ -2,7 +2,10 @@
 
 import hashlib
 from getpass import getpass
+from datetime import datetime
+from time import perf_counter
 
+from models.results import TestResult
 from config import MAX_PASSWORD_LENGTH
 from utils.cli_helpers import clear_screen, pause, print_header
 
@@ -10,7 +13,7 @@ from utils.cli_helpers import clear_screen, pause, print_header
 def sha256_hash(password: str) -> str:
     return hashlib.sha256(password.encode("utf-8")).hexdigest()
 
-def run_secure_storage_demo() -> None:
+def run_secure_storage_demo(session_results: list[TestResult],) -> None:
     """Demonstrate plaintext password storage and SHA-256 hashing."""
     clear_screen()
     print_header("SECURE STORAGE DEMONSTRATION")
@@ -27,8 +30,21 @@ def run_secure_storage_demo() -> None:
         pause()
         return
 
+    start_time = perf_counter()
     hashed_password = sha256_hash(password)
+    elapsed_seconds = perf_counter() - start_time
 
+    session_results.append(
+        TestResult(
+            test_type="Secure Storage Demonstration",
+            status="SHA-256 demonstration completed",
+            rating=None,
+            attempts=None,
+            elapsed_seconds=elapsed_seconds,
+            timestamp=datetime.now(),
+        )
+    )
+    
     print(
     """
 ------------------------------------------------------------

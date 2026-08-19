@@ -8,7 +8,9 @@ from dataclasses import dataclass
 from getpass import getpass
 from pathlib import Path
 from time import perf_counter
+from datetime import datetime
 
+from models.results import TestResult
 from config import MAX_PASSWORD_LENGTH, WORDLIST_PATH
 from utils.cli_helpers import (
     clear_screen,
@@ -221,7 +223,7 @@ def display_attack_result(
         )
 
 
-def run_dictionary_attack() -> None:
+def run_dictionary_attack(session_results: list[TestResult],) -> None:
     """Run the interactive dictionary attack simulator."""
     clear_screen()
     print_header("DICTIONARY ATTACK SIMULATOR")
@@ -261,6 +263,17 @@ def run_dictionary_attack() -> None:
         wordlist=wordlist,
     )
 
+    session_results.append(
+        TestResult(
+            test_type="Dictionary Attack",
+            status=result.success,
+            rating=None,
+            attempts=result.attempts,
+            elapsed_seconds=result.elapsed_seconds,
+            timestamp=datetime.now(),
+        )
+    )
+    
     display_attack_result(result)
     
     # Remove the local reference when it is no longer needed.

@@ -11,6 +11,7 @@ from modules.dashboard import run_dashboard
 from modules.dictionary_attack import run_dictionary_attack
 from modules.secure_storage import run_secure_storage_demo
 from modules.strength_analyzer import run_strength_analyzer
+from models.results import TestResult
 from utils.cli_helpers import (
     clear_screen,
     get_menu_choice,
@@ -67,22 +68,24 @@ def main() -> None:
     """Run the application's main menu loop."""
     display_ethical_use_notice()
 
+    session_results: list[TestResult] = []
+
     while True:
         display_home_menu()
 
         choice = get_menu_choice(MAIN_MENU_OPTIONS.keys())
 
         if choice == "1":
-            run_strength_analyzer()
+            run_strength_analyzer(session_results)
 
         elif choice == "2":
-            run_dictionary_attack()
+            run_dictionary_attack(session_results)
 
         elif choice == "3":
-            run_brute_force_attack()
+            run_brute_force_attack(session_results)
 
         elif choice == "4":
-            run_secure_storage_demo()
+            run_secure_storage_demo(session_results)
 
         elif choice == "5":
             run_dashboard()

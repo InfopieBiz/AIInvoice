@@ -8,7 +8,9 @@ from dataclasses import dataclass
 from getpass import getpass
 from itertools import product
 from time import perf_counter
+from datetime import datetime
 
+from models.results import TestResult
 from config import (
     BRUTE_FORCE_PROGRESS_INTERVAL,
     BRUTE_FORCE_TIMEOUT_SECONDS,
@@ -662,7 +664,7 @@ def display_overall_result(
     )
 
 
-def run_brute_force_attack() -> None:
+def run_brute_force_attack(session_results: list[TestResult],) -> None:
     """Run the interactive automatic brute-force simulator."""
 
     clear_screen()
@@ -750,6 +752,55 @@ def run_brute_force_attack() -> None:
 
         total_elapsed_seconds = (
             perf_counter() - overall_start
+        )
+
+        total_attempts = sum(
+            result.attempts
+            for result in results
+        )
+
+        successful_result = next(
+            (
+                result
+                for result in results
+                if result.success
+            ),
+            None,
+        )
+
+        if successful_result is not None:
+            status = "Password found"
+
+        elif (
+            results
+            and results[-1].stop_reason == "maximum_attempts"
+        ):
+            status = "Maximum attempt limit reached"
+
+        elif (
+            results
+            and results[-1].stop_reason == "timeout"
+        ):
+            status = "Timeout reached"
+
+        elif (
+            results
+            and results[-1].stop_reason == "cancelled"
+        ):
+            status = "Cancelled"
+
+        else:
+            status = "Password not found"
+
+        session_results.append(
+            TestResult(
+                test_type="Brute Force Attack",
+                status=status,
+                rating=None,
+                attempts=total_attempts,
+                elapsed_seconds=total_elapsed_seconds,
+                timestamp=datetime.now(),
+            )
         )
 
         print()

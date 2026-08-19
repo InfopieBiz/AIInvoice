@@ -7,7 +7,10 @@ import re
 import string
 from dataclasses import dataclass
 from getpass import getpass
+from time import perf_counter
+from datetime import datetime
 
+from models.results import TestResult
 from config import (
     COMMON_PASSWORDS,
     COMMON_PASSWORD_WORDS,
@@ -519,7 +522,7 @@ def display_analysis_result(
     )
 
 
-def run_strength_analyzer() -> None:
+def run_strength_analyzer(session_results: list[TestResult],) -> None:
     """Run the complete password strength analyzer."""
     clear_screen()
     print_header("PASSWORD STRENGTH ANALYZER")
@@ -534,7 +537,9 @@ def run_strength_analyzer() -> None:
     )
 
     password = read_password_securely()
+    start_time = perf_counter()
     result = analyze_password(password)
+    elapsed_seconds = perf_counter() - start_time
 
     display_analysis_result(result)
 
@@ -551,11 +556,18 @@ def run_strength_analyzer() -> None:
             "This password has a reasonably strong structure."
         )
 
+    session_results.append(
+        TestResult(
+            test_type="Password Strength Analyzer",
+            status="Completed",
+            rating=result.rating,
+            attempts=None,
+            elapsed_seconds=elapsed_seconds,
+            timestamp=datetime.now(),
+        )
+    )
+
     # Stop intentionally retaining the local password reference.
     del password
 
     pause()
-
-
-if __name__ == "__main__":
-    run_strength_analyzer()
