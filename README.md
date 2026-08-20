@@ -209,11 +209,18 @@ Shows the difference between storing passwords as plaintext and storing a SHA-25
     * Added summary result record after finished tests
     * Added timestamps and execution information to session logs
     * Kept results only in memory, vanishing when the application closes
+
+#### Stage 3 - Results Dashboard Screen 
+
+    Completed:
+    * Results Dashboard screen for menu option 5 have been implemented
+    * Connected the shared session results list to the dashboard
+    * Added total number of completed tests, ordered display of recorded test results.
+    * Added clean formatting and safe handling for empty sessions
     
 #### In the next stages
 
     The following will be implemented:
-    * Build the Results Dashboard screen and display recorded session results
     * Add the security summary and clear-session option
     * Complete manual testing and final documentation for the dashboard
 

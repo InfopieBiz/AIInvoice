@@ -88,7 +88,7 @@ def main() -> None:
             run_secure_storage_demo(session_results)
 
         elif choice == "5":
-            run_dashboard()
+            run_dashboard(session_results)
 
         elif choice == "0":
             display_exit_message()
